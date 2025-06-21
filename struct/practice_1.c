@@ -10,8 +10,10 @@ struct Student
 
 void insertStudent(struct Student *group, int *length);
 void printStudent(struct Student *group, int length);
-void printMaxGpa(struct Student *group, int length, int choice);
-void questionForStop(int *choice);
+void printMaxGpa(struct Student *group, int length);
+void questionForStop(int *choice, int i, int count);
+void sortStudents(struct Student *group, int length);
+void preventSkipLine();
 
 int main()
 {
@@ -26,57 +28,72 @@ int main()
     int choice = 1;
     int i = 0;
     int count;
-    char buff[5];
     printf("Lop co bao nhieu sinh vien: ");
     scanf("%d", &count);
     struct Student c2505e[count];
-    fgets(buff, sizeof(buff), stdin);
+    preventSkipLine();
     do
     {
         insertStudent(c2505e, &i);
         printStudent(c2505e, i);
-        questionForStop(&choice);
-        printMaxGpa(c2505e, i, choice);
-    } while (choice != 0 || i > count);
-
+        questionForStop(&choice, i, count);
+        if (choice == 0 || i >= count)
+        {
+            printMaxGpa(c2505e, i);
+            sortStudents(c2505e, i);
+            printStudent(c2505e, i);
+            return 0;
+        }
+    } while (choice != 0 && i < count);
     return 0;
 }
 
-void printMaxGpa(struct Student *group, int length, int choice)
+void printMaxGpa(struct Student *group, int length)
 {
-    if (choice == 0)
+    int maxIndex = 0;
+    struct Student *ptr = group;
+    for (int i = 0; i < length; i++)
     {
-        int maxIndex = 0;
-        struct Student *ptr = group;
-        for (int i = 0; i < length; i++)
+        if ((*(ptr + i)).gpa >= (*(ptr + maxIndex)).gpa)
+            maxIndex = i;
+    }
+    struct Student *maxGpa = group;
+    maxGpa += maxIndex;
+    printf("Max GPA from Student %s with GPA = %.2f\n", (*maxGpa).name, (*maxGpa).gpa);
+}
+
+void sortStudents(struct Student *group, int length)
+{
+    for (int i = length; i > 0; i--)
+    {
+        for (int j = 0; j < i; j++)
         {
-            if ((*(ptr + i)).gpa >= (*(ptr + maxIndex)).gpa)
+            if (j < i - 1 && (*(group + j)).gpa < (*(group + j + 1)).gpa)
             {
-                maxIndex = i;
+                struct Student temp = *(group + j + 1);
+                *(group + j + 1) = *(group + j);
+                *(group + j) = temp;
             }
         }
-        struct Student *maxGpa = group;
-        maxGpa += maxIndex;
-        printf("Max GPA from Student %s with GPA = %.2f", (*maxGpa).name, (*maxGpa).gpa);
     }
 }
 
 void insertStudent(struct Student *group, int *length)
 {
     struct Student student;
-    printf("Nhap ten sinh vien: \n");
+    printf("Nhap ten sinh vien: ");
     fgets(student.name, sizeof(student.name), stdin);
 
-    printf("Nhap ten lop: \n");
+    printf("Nhap ten lop: ");
     fgets(student.group, sizeof(student.group), stdin);
 
-    printf("Nhap gpa: \n");
+    printf("Nhap gpa: ");
     scanf("%f", &student.gpa);
 
-    printf("Nhap tuoi: \n");
+    printf("Nhap tuoi: ");
     scanf("%d", &student.age);
     group[*length] = student;
-    *length++;
+    *length = *length + 1;
 };
 
 void printStudent(struct Student *group, int length)
@@ -89,13 +106,16 @@ void printStudent(struct Student *group, int length)
     }
 }
 
-void questionForStop(int *choice)
+void questionForStop(int *choice, int i, int count)
 {
     printf("1 - Continue, 0 - Find student with max GPA and Exit ?\n");
     scanf("%d", choice);
     if (choice != 0)
-    {
-        char buff[5];
-        fgets(buff, sizeof(buff), stdin);
-    }
+        preventSkipLine();
+}
+
+void preventSkipLine()
+{
+    char skipLine[2];
+    fgets(skipLine, sizeof(skipLine), stdin);
 }
