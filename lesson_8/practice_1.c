@@ -31,7 +31,7 @@ int main()
     printf("Lop co bao nhieu sinh vien: ");
     scanf("%d", &count);
     struct Student c2505e[count];
-    preventSkipLine();
+    preventSkipLine(); // Ngăn lỗi nhảy dòng của fgets()
     do
     {
         insertStudent(c2505e, &i);
