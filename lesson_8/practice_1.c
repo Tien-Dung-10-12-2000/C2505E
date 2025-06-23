@@ -116,6 +116,5 @@ void questionForStop(int *choice, int i, int count)
 
 void preventSkipLine()
 {
-    char skipLine[2];
-    fgets(skipLine, sizeof(skipLine), stdin);
+    getchar();
 }
