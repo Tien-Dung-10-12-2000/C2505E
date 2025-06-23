@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 
 int main()
 {
@@ -15,16 +16,7 @@ int main()
         {
             printf("LED is ON\n");
         }
-        int z = 0;
-        while (z <= 100000)
-        {
-            int y = 0;
-            while (y <= 100000 / 2)
-            {
-                y++;
-            }
-            z++;
-        }
+        sleep(1);
     }
 
     return 0;
